@@ -6,17 +6,18 @@
 //
 
 import UIKit
+import Kingfisher
 
 class DetailNewsController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var imageView: UIImageView!
     
-    var selectedModel: NewsModel?
+    var selectedModel: NewsModel.Articles?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        imageView.image = selectedModel?.image
+        imageView.kf.setImage(with: URL(string: selectedModel?.urlToImage ?? ""))
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.delegate = self
         tableView.dataSource = self
@@ -31,7 +32,7 @@ extension DetailNewsController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell")!
-        cell.textLabel?.text = selectedModel?.newsStory
+        cell.textLabel?.text = selectedModel?.description
         cell.textLabel?.numberOfLines = 0
         return cell
     }

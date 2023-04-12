@@ -11,22 +11,24 @@ import UIKit
 
 class NewsViewModel: NSObject {
     
-    var model = [NewsModel]()
-    var newsArray = ["Since then, the situation with the coronavirus has continued to evolve. New variants of the virus have emerged, including the Delta variant, which is believed to be more transmissible than previous strains. In response, many countries have updated their public health guidelines and vaccination campaigns to address the new variants. As of my current date of April 2023, it is likely that there have been further developments in the ongoing coronavirus pandemic. \nHowever, as an AI language model, I am unable to access up-to-date news in real-time. I recommend checking reliable news sources for the latest information on the coronavirus situation. \nflowers have long been admired for their beauty and have become a symbol of love, friendship, and appreciation in many cultures.\nThere are many different types of flowers, ranging from small wildflowers to large, showy blooms. Some popular types of flowers include roses, lilies, sunflowers, daisies, and orchids. Flowers are often",
-                     "The mobile industry has been continuously evolving with the advancement of technology. In recent years, there has been a focus on 5G technology, which promises faster data transfer speeds and lower latency. Many smartphone manufacturers have launched 5G-enabled phones, and mobile network operators are working on expanding their 5G coverage.\nAnother trend in the mobile industry is the increasing popularity of foldable phones. These phones have screens that can be folded in half, allowing for a larger display in a smaller form factor. Several manufacturers have already launched foldable phones, and more are expected to follow. which has been observed on March 8th since the early 1900s. In 1978, the Education Task Force of the Sonoma County (California) Commission on the Status of Women initiated a Women's History Week celebration during the week of March 8th, and the idea quickly gained momentum. In 1980, President Jimmy Carter declared the week of March 8th as National Women's History Week, and in 1987, Congress declared March as Women's History Month.",
-                     "In terms of software, mobile operating systems like iOS and Android continue to release updates with new features and improvements. Additionally, mobile apps and games continue to be a major part of the mobile experience, with many users relying on their phones for entertainment and productivity.\nOverall, the mobile industry remains a rapidly evolving and competitive space, with new developments and innovations emerging regularly.",
-                     "Flowers are a diverse and colorful part of the natural world. They play an important role in ecosystems, serving as a source of food and habitat for many species of insects and birds. Additionally, flowers have long been admired for their beauty and have become a symbol of love, friendship, and appreciation in many cultures.\nThere are many different types of flowers, ranging from small wildflowers to large, showy blooms. Some popular types of flowers include roses, lilies, sunflowers, daisies, and orchids. Flowers are often used in gardens, as decorations for special occasions, and as a way to express emotions.",
-                     "For example, in the United States, February is recognized as Black History Month, a time to honor and celebrate the accomplishments and contributions of African Americans throughout history. March is Women's History Month, a time to recognize and celebrate the achievements and contributions of women in history.\nIn addition, there are other months and days throughout the year that are dedicated to celebrating and raising awareness of specific causes and groups of people, such as Pride Month for the LGBTQ+ community, Hispanic Heritage Month, and International Women's Day.",
-                     "Celebrating and recognizing the diverse histories and contributions of different groups of people is an important way to promote understanding, inclusivity, and social justice. By highlighting the achievements and struggles of different communities, we can gain a better appreciation of our shared humanity and work towards a more equitable and just society",
-                     "Women's History Month is celebrated every year in March in the United States, Canada, and other countries around the world. It is a time to recognize and celebrate the contributions of women throughout history and in contemporary society.\nWomen's History Month has its roots in International Women's Day, which has been observed on March 8th since the early 1900s. In 1978, the Education Task Force of the Sonoma County (California) Commission on the Status of Women initiated a Women's History Week celebration during the week of March 8th, and the idea quickly gained momentum. In 1980, President Jimmy Carter declared the week of March 8th as National Women's History Week, and in 1987, Congress declared March as Women's History Month.",
-                     "Climate mobility refers to the movement of people from one place to another as a result of environmental or climate-related factors such as natural disasters, droughts, or sea-level rise. This type of mobility is often involuntary and can have significant social, economic, and political implications for affected communities.",
-                     "In recent years, there has been growing recognition of the need to address the impacts of climate mobility and to support affected communities. This includes efforts to improve data collection and analysis, develop policy frameworks for addressing climate mobility, and provide assistance and support to affected communities. The issue of climate mobility is expected to become increasingly important in the coming years as the impacts of climate change continue to unfold.","Climate mobility can take many forms, including internal displacement within a country, cross-border migration, or relocation to designated areas of refuge. The impacts of climate change, such as rising temperatures, more frequent and intense weather events, and sea-level rise, are expected to exacerbate existing social, economic, and political challenges and increase the frequency and intensity of climate mobility."]
+    var model: NewsModel?
+    var apiKey = "4ace9900217a4544bd2274b41e7bb9cb"
     
-    
-    func prepareNewsData(completionHandler: ([NewsModel])->Void) {
-        for (index, text) in newsArray.enumerated() {
-            model.append(NewsModel(newsStory: text, image: UIImage(named: "image\(index)")!))
+    func getApiCall( completion: @escaping (String)->Void) {
+        if let url = URL(string: "https://newsapi.org/v2/everything?q=tesla&from=2023-03-12&sortBy=publishedAt&apiKey=\(apiKey)") {
+            URLSession.shared.dataTask(with: url) { data, response, error in
+                if let error = error {
+                    completion(error.localizedDescription)
+                } else if let data = data {
+                    do {
+                        self.model = try JSONDecoder().decode(NewsModel.self, from: data)
+                        completion("success")
+                    }catch {
+                        print("Error: \(error.localizedDescription)")
+                        completion(error.localizedDescription)
+                    }
+                }
+            }.resume()
         }
-        completionHandler(model)
     }
 }
